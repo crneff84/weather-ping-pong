@@ -98,6 +98,7 @@ gulp.task('bowerCSS', function () {
 
 gulp.task('bower', ['bowerJS', 'bowerCSS']);
 
+// serves the app to the server/browser. $gulp serve will run a js build, a bower build and browserify.
 gulp.task('serve', function() {
   browserSync.init({
     server: {
@@ -116,15 +117,4 @@ gulp.task('jsBuild', ['jsBrowserify', 'jshint'], function(){
 gulp.task('bowerBuild', ['bower'], function(){
   browserSync.reload();
 });
-
-gulp.task('serve', function() {
-  browserSync.init({
-    server: {
-      baseDir: "./",
-      index: "index.html"
-    }
-  });
-  
-  gulp.watch(['js/*.js'], ['jsBuild']);
-  });
-});
+// end tasks related to serve
