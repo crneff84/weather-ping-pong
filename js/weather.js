@@ -3,9 +3,10 @@ var apiKey = require('./../.env').apiKey;
 Weather = function(){
 };
 
-Weather.prototype.getWeather = function(city, displayFunction) {
+// getWeather expects two arguments, (we pass) a city and (we pass) displayHumidity. 
+Weather.prototype.getWeather = function(city, displayFunctionParameter) {
   $.get('http://api.openweathermap.org/data/2.5/weather?q=' + city + '&appid=' + apiKey).then(function(response) {
-    displayFunction(city, response.main.humidity)
+    displayFunctionParameter(city, response.main.humidity);
   }).fail(function(error) {
     $('.showWeather').text(error.responseJSON.message);
   });
