@@ -16,7 +16,7 @@ var buildProduction = utilities.env.production;
 var del = require('del');
 // a linter that analyzes code and warns us about stuff that doesn't follow code conventions
 var jshint = require('gulp-jshint');
-// ?
+// bootstrap css and js and something else
 var lib = require('bower-files')({
   "overrides":{
     "bootstrap" : {
@@ -30,7 +30,10 @@ var lib = require('bower-files')({
 });
 // implement our development server with live reloading
 var browserSync = require('browser-sync').create();
-
+// css preprocessor
+var sass = require('gulp-sass');
+// adds some code which allows us to see which Sass files are responsible for each CSS rule that we see in the browser.
+var sourcemaps = require('gulp-sourcemaps');
 
 
 gulp.task('myTask', function(){
@@ -56,18 +59,6 @@ gulp.task("minifyScripts", ["jsBrowserify"], function(){
     .pipe(gulp.dest("./build/js"));
 });
 
-gulp.task("build", function(){
-  if (buildProduction) {
-    gulp.start('minifyScripts');
-  } else {
-    gulp.start('jsBrowserify');
-  }
-});
-
-gulp.task("clean", function(){
-  return del(['build', 'tmp']);
-});
-
 gulp.task("build", ['clean'], function(){
   if (buildProduction) {
     gulp.start('minifyScripts');
@@ -75,6 +66,11 @@ gulp.task("build", ['clean'], function(){
     gulp.start('jsBrowserify');
   }
   gulp.start('bower');
+  gulp.start('cssBuild');
+});
+
+gulp.task("clean", function(){
+  return del(['build', 'tmp']);
 });
 
 gulp.task('jshint', function(){
@@ -119,3 +115,11 @@ gulp.task('bowerBuild', ['bower'], function(){
   browserSync.reload();
 });
 // end tasks related to serve
+
+gulp.task('cssBuild', function() {
+  return gulp.src(['scss/*.scss'])
+    .pipe(sourcemaps.init())
+    .pipe(sass())
+    .pipe(sourcemaps.write())
+    .pipe(gulp.dest('./build/css'));
+});
